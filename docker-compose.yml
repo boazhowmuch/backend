@@ -1,0 +1,18 @@
+version: '3'
+services:
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql-db
+
+  mysql-db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=Uuu1234!@
+      - MYSQL_DATABASE=FLOWER_DB
+    ports:
+      - 3306:3306
