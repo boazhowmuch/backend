@@ -9,6 +9,7 @@ const lines = data.split('\n');
 
 // 각 줄에서 정보 추출
 const dbInfo = {};
+
 lines.forEach((line) => {
   const parts = line.trim().split('=');
   if (parts.length === 2) {
