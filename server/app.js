@@ -10,6 +10,7 @@ const app = express();
 
 // 뷰 엔진으로 뭘 쓸지 정함. 우리는 ejs 사용.
 app.set('views', path.join(__dirname, 'views'));
+
 app.set('view engine', 'ejs');
 
 // app객체가 외부 모듈을 사용할 수 있도록 .use(모듈)을 해줌
@@ -17,6 +18,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// style file
 app.use(express.static(path.join(__dirname, 'public')));
 
 

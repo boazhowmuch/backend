@@ -3,6 +3,8 @@ const models = require('../models/login.js'); // models 모듈 require
 
 
 module.exports = {
+
+    // login의 GET,POST 메소드 담고 있음
     login: {
       get: (req, res) => {
         res.render('login', { msg: '' , title: 'Express'});
