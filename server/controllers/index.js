@@ -7,10 +7,36 @@ const models = require('../models'); // models 모듈 require
 const projectId = 'test-chatbot-ko-xcvj';
 const languageCode = 'ko';
 
+
+async function planCreate(intent, userId, responses) {
+  // 사입계획 작성
+  if (intent === "01_01_01.buying.insert.check - yes") {
+    const parameters = responses[0].queryResult.outputContexts[0].parameters.fields;
+    const flower = parameters.flower.stringValue;
+    const buy_date = parameters.buy_date.stringValue;
+    const flower_unit = parameters.flower_unit.stringValue;
+
+    //userid, date, flower, unit순서
+    const values = [userId, buy_date, flower, flower_unit];
+
+    models.plan.post(values, (error, result) => {
+      if (error) {
+        console.error(error);
+        const errMsg = '입력하지 못했습니다.' 
+        return res.status(500).send(errMsg);
+        }
+
+      return;
+    });
+  }
+
+}
+
 // Dialogflow function
 async function detectIntent(
   projectId,
   sessionId,
+  userId,
   query,
   contexts,
   languageCode
@@ -41,10 +67,17 @@ async function detectIntent(
   }
 
   const responses = await sessionClient.detectIntent(request);
+
+  // context에 따라 달라짐
+  currentContext = responses[0].queryResult.intent.displayName;
+  await planCreate(currentContext, userId, responses);
+  
+
   return responses[0];
 }
 
-async function executeQueries(projectId, sessionId, queries, languageCode) {
+// dialogflow 챗봇이 사용자에게 응답 메시지 전송하는 함수
+async function responseMessage(projectId, sessionId, userId, queries, languageCode) {
   // Keeping the context across queries let's us simulate an ongoing conversation with the bot
   let context;
   let intentResponse;
@@ -54,22 +87,17 @@ async function executeQueries(projectId, sessionId, queries, languageCode) {
       intentResponse = await detectIntent(
         projectId,
         sessionId,
+        userId,
         query,
         context,
         languageCode
       );
-      
-      // console.log('Detected intent');
-      // console.log(
-      //   `Fulfillment Text: ${intentResponse.queryResult.fulfillmentText}`
-      // );
-      // Use the context from this response for next queries
-      // context = intentResponse.queryResult.outputContexts;
+
     } catch (error) {
       console.log(error);
     }
   }
-  console.log(intentResponse.queryResult.fulfillmentText);
+
   return intentResponse.queryResult.fulfillmentText;
 }
 
@@ -94,18 +122,18 @@ module.exports = {
     // dialogflow API함수로부터 응답받아야 클라이언트에게 응답값 전송하는 비동기 처리
     post: async(req, res) => {
 
-      // Instantiates a session client
-
       // 쿠키 정보를 가져온다(token id를 가져오기 위함)
       const cookieValue = req.cookies.info;
 
       if (cookieValue) {
         // 나중에 jwt token을 쓰게 되면 수정 필요
         const sessionId = JSON.parse(cookieValue).account_id;
+        const userId = JSON.parse(cookieValue).account_id;
+
         // 유저가 입력한 질문(리스트형태로 입력)
         const queries = [req.body.message];
         // 유저가 입력한 질문을 유저 id와 함께 챗봇 API서버에 전송 => 거기에 대한 챗봇 응답(비동기)
-        const response_msg = await executeQueries(projectId, sessionId, queries, languageCode);
+        const response_msg = await responseMessage(projectId, sessionId, userId, queries, languageCode);
         return res.send({ "message": response_msg });
 
       } else {
