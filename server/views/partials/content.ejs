@@ -11,7 +11,8 @@
 
 	// 메시지를 화면에 추가하는 함수
 	function addMessage(message) {
-		var newMessage = document.createElement('p');
+		// 줄바꿈 나타내기 위해 pre tag 사용
+		var newMessage = document.createElement('pre');
 		newMessage.textContent = message;
 		chatbox.appendChild(newMessage);
 	}

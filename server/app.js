@@ -34,17 +34,6 @@ const http = require("http");
 app.use('/', indexRouter);
 
 
-
-
-
-
-
-
-
-
-
-
-
 // 404에러를 잡아내고 예외처리해줌
 app.use(function(req, res, next) {
     next(createError(404));

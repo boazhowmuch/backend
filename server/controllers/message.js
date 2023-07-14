@@ -1,6 +1,7 @@
 const dialogflow = require('@google-cloud/dialogflow');
 const cookieParser = require('cookie-parser'); // 쿠키값을 다루기 위해 필요한 모듈
-const models = require('../models'); // models 모듈 require
+const models = require('../models/message'); // models 모듈 require
+const axios = require('axios');
 
 
 // 현재 우리가 제작한 챗봇의 project ID 및 언어(전역변수)
@@ -8,42 +9,51 @@ const projectId = 'test-chatbot-ko-xcvj';
 const languageCode = 'ko';
 
 
-async function planCreate(intent, userId, responses) {
-  // 사입계획 작성
-  if (intent === "01_01_01.buying.insert.check - yes") {
-    const parameters = responses[0].queryResult.outputContexts[0].parameters.fields;
-    const flower = parameters.flower.stringValue;
-    const buy_date = parameters.buy_date.stringValue;
-    const flower_unit = parameters.flower_unit.stringValue;
 
-    //userid, date, flower, unit순서
-    const values = [userId, buy_date, flower, flower_unit];
+// 1. dialogflow 챗봇이 사용자에게 응답 메시지 전송하는 함수
+async function responseMessage(
+  projectId, 
+  sessionId, 
+  userId, 
+  userName, 
+  queries, 
+  languageCode) {
+  // Keeping the context across queries let's us simulate an ongoing conversation with the bot
+  let context;
+  let intentResponse;
+  for (const query of queries) {
+    try {
+      console.log(`Sending Query: ${query}`);
+      intentResponse = await detectIntent(
+        projectId,
+        sessionId,
+        userId,
+        userName,
+        query,
+        context,
+        languageCode
+      );
 
-    models.plan.post(values, (error, result) => {
-      if (error) {
-        console.error(error);
-        const errMsg = '입력하지 못했습니다.' 
-        return res.status(500).send(errMsg);
-        }
-
-      return;
-    });
+    } catch (error) {
+      console.log(error);
+    }
   }
-
+  return intentResponse.queryResult.fulfillmentText;
 }
 
-// Dialogflow function
+// 2. Dialogflow function
 async function detectIntent(
   projectId,
   sessionId,
   userId,
+  userName,
   query,
   contexts,
   languageCode
 ) {
+  // The path to identify the agent that owns the created intent.
   const sessionClient = new dialogflow.SessionsClient();
 
-  // The path to identify the agent that owns the created intent.
   const sessionPath = sessionClient.projectAgentSessionPath(
     projectId,
     sessionId
@@ -58,6 +68,12 @@ async function detectIntent(
         languageCode: languageCode,
       },
     },
+    // 유저 정보 보냄
+    queryParams: {
+      "webhookHeaders" : {
+          "user-id" : userId,
+          "user-name": userName}
+    }
   };
 
   if (contexts && contexts.length > 0) {
@@ -70,44 +86,18 @@ async function detectIntent(
 
   // context에 따라 달라짐
   currentContext = responses[0].queryResult.intent.displayName;
-  await planCreate(currentContext, userId, responses);
-  
 
   return responses[0];
 }
 
-// dialogflow 챗봇이 사용자에게 응답 메시지 전송하는 함수
-async function responseMessage(projectId, sessionId, userId, queries, languageCode) {
-  // Keeping the context across queries let's us simulate an ongoing conversation with the bot
-  let context;
-  let intentResponse;
-  for (const query of queries) {
-    try {
-      console.log(`Sending Query: ${query}`);
-      intentResponse = await detectIntent(
-        projectId,
-        sessionId,
-        userId,
-        query,
-        context,
-        languageCode
-      );
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  return intentResponse.queryResult.fulfillmentText;
-}
-
 module.exports = {
-  items: {
+  home: {
     get: (req, res) => {
-      const cookieInfo = req.cookies.info;
-      if (cookieInfo) {
+      const cookieValue = req.cookies.info;
+      if (cookieValue) {
         // 쿠키 값을 객체로 변환
-        const cookieData = JSON.parse(cookieInfo);
+        const cookieData = JSON.parse(cookieValue);
+
         if (cookieData.loggedin) {
           // 사용자가 로그인 상태인 경우
           return res.render('index', { username: cookieData.username });
@@ -125,22 +115,23 @@ module.exports = {
       // 쿠키 정보를 가져온다(token id를 가져오기 위함)
       const cookieValue = req.cookies.info;
 
+      // 쿠키 정보가 있으면, dialogflow에 API에 전송
       if (cookieValue) {
         // 나중에 jwt token을 쓰게 되면 수정 필요
         const sessionId = JSON.parse(cookieValue).account_id;
         const userId = JSON.parse(cookieValue).account_id;
+        const userName = JSON.parse(cookieValue).username;
 
         // 유저가 입력한 질문(리스트형태로 입력)
         const queries = [req.body.message];
         // 유저가 입력한 질문을 유저 id와 함께 챗봇 API서버에 전송 => 거기에 대한 챗봇 응답(비동기)
-        const response_msg = await responseMessage(projectId, sessionId, userId, queries, languageCode);
+        const response_msg = await responseMessage(projectId, sessionId, userId, userName, queries, languageCode);
         return res.send({ "message": response_msg });
 
+      // 나중에 올바르지 않은 사용자 alert등 예외처리 해야 함(쿠키가 없는 경우 등)
       } else {
-        // 나중에 올바르지 않은 사용자 alert등 예외처리 해야 함(쿠키가 없는 경우 등)
         return res.send({ "message": "다시 로그인 후 시도 바랍니다." });
       }
-
     }
   }
 }

@@ -26,7 +26,7 @@ module.exports = {
               const account = result[0];
               
               // 이후에 jwt token등을 사용하게 되면, 현재 db에 저장된 id를 그것으로 대체해야 할듯
-              const account_id = account.id;
+              const account_id = account.accId;
               const account_username = account.username;
 
               // 쿠키 정보를 일단 다음과 같이 담음 => 후에 jwt로그인 방식이 이용된다면, 변경
