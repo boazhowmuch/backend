@@ -1,7 +1,6 @@
 const dialogflow = require('@google-cloud/dialogflow');
 const cookieParser = require('cookie-parser'); // 쿠키값을 다루기 위해 필요한 모듈
 const models = require('../models/message'); // models 모듈 require
-const axios = require('axios');
 
 
 // 현재 우리가 제작한 챗봇의 project ID 및 언어(전역변수)
