@@ -105,7 +105,8 @@ module.exports = {
       }
     
       // 사용자가 로그인되지 않은 경우
-      return res.redirect('/login');
+      // return res.redirect('/login');
+      return res.status(400).json({ error: "다시 로그인 부탁드립니다." });
     },
   },
   message: {

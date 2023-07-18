@@ -43,13 +43,13 @@ module.exports = {
 
               console.log(cookie_info);
               res.cookie('info', JSON.stringify(cookie_info));
-              msg = "hello";
-              // res.json({msg: msg});
-              res.redirect('/');
+              msg = "로그인에 성공하였습니다.";
+              res.json({message: msg});
+              // res.redirect('/');
           } else {
               console.log(result);
-              msg = 'Incorrect username/password!';
-              res.json({msg: msg});
+              msg = '아이디 또는 비밀번호를 잘못 입력하였습니다.';
+              res.json({message: msg});
               // res.render('login', { msg: msg });
           }
         });
