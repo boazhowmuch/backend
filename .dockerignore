@@ -1,5 +1,4 @@
 node_modules/
 chatbot_env/
 .git/
-conf/
 *.pem*
