@@ -11,9 +11,11 @@ module.exports = {
 
         // 쿠키 제거
         res.clearCookie('info');
+        msg = "로그아웃 하였습니다..";
+        res.json({message: msg});
 
         // login홈페이지로 redirect
-        res.redirect('/login');
+        // res.redirect('/login');
               
       }
 

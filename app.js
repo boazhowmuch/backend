@@ -1,4 +1,4 @@
-const cors    = require("cors");    // npm i cors | yarn add cors
+const cors    = require('cors');    // npm i cors | yarn add cors
 let createError = require('http-errors'); // http 에러 처리용 모듈
 let express = require('express'); // express 프레임워크를 사용하기 위한 모듈
 let path = require('path'); // 프로젝트 내부에서, 파일들의 상대경로를  위한 모듈
@@ -20,6 +20,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// let corsOptions = {
+//     origin: 'http://localhost:3000/',
+//     credentials: true
+// }
+
+app.use(cors());
+
+
 // style file
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,26 +43,26 @@ const http = require("http");
 app.use('/', indexRouter);
 
 
-// 404에러를 잡아내고 예외처리해줌
-app.use(function(req, res, next) {
-    next(createError(404));
-});
+// // 404에러를 잡아내고 예외처리해줌
+// app.use(function(req, res, next) {
+//     next(createError(404));
+// });
 
-// 400에러를 잡아내고 예외처리해줌
-app.use(function(req, res, next) {
-    next(createError(400));
-});
+// // 400에러를 잡아내고 예외처리해줌
+// app.use(function(req, res, next) {
+//     next(createError(400));
+// });
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+// // error handler
+// app.use(function(err, req, res, next) {
+//     // set locals, only providing error in development
+//     res.locals.message = err.message;
+//     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
+//     // render the error page
+//     res.status(err.status || 500);
+//     res.render('error');
+// });
 
 
 // 호스트이름, 포트 설정
@@ -63,12 +71,7 @@ const port = 3000;
 
 // app객체를 실행할 server객체를 만듦
 const server = http.createServer(app);
-// app.use(cors({
-//     origin: "*",                // 출처 허용 옵션
-//     credentials: true,          // 응답 헤더에 Access-Control-Allow-Credentials 추가
-//     optionsSuccessStatus: 200,  // 응답 상태 200으로 설정
-// }))
-app.use(cors());
+
 // hostname, port에 대해 server객체가 listen하기 시작함.
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);
