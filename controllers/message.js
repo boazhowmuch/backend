@@ -123,14 +123,24 @@ module.exports = {
         const userName = JSON.parse(cookieValue).username;
 
         // 유저가 입력한 질문(리스트형태로 입력)
-        const queries = [req.body.message];
-        // 유저가 입력한 질문을 유저 id와 함께 챗봇 API서버에 전송 => 거기에 대한 챗봇 응답(비동기)
-        const response_msg = await responseMessage(projectId, sessionId, userId, userName, queries, languageCode);
-        return res.send({ "message": response_msg });
+        try {
+          const message = req.body.message;
+        
+          if (!message) {
+            throw new Error('메시지 형식이 잘못되었거나, 메시지가 잘못되었습니다. 다시 입력해주세요.');
+          }
+        
+          const queries = [message];
+          const response_msg = await responseMessage(projectId, sessionId, userId, userName, queries, languageCode);
+          return res.send({ message: response_msg });
+          
+        } catch (error) {
+          res.status(400).json({ error: error.message });
+        }
 
       // 나중에 올바르지 않은 사용자 alert등 예외처리 해야 함(쿠키가 없는 경우 등)
       } else {
-        return res.send({ "message": "다시 로그인 후 시도 바랍니다." });
+        res.status(400).json({ error: '다시 로그인 후 전송해주세요.' });
       }
     }
   }
