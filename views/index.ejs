@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <!--  res.render('응답을 할 경로', {변수명:'값'})-->
-    <!--  res.render('index', {title:'Express'})-->
-    <!--  index.js가 전달한 변수인 title에 'Express'라는 값을 담아뒀기 때문에, -->
-    <!--  화면에 'Express'가 출력됩니다.  -->
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
-</head>
-<body>
-<h1><%= title %></h1>
-<p>Welcome to wooseok<%= title %>!</p>
-</body>
+
+  <!-- Head -->
+  <%- include('./partials/head.ejs') %>
+
+  <!-- login되었을 때, 메인 화면 -->
+	<body class="loggedin">
+    
+    <!-- 네비게이션 bar -->
+    <%- include('./partials/nav.ejs') %>
+
+    <!-- 채팅 콘텐츠 -->
+    <%- include('./partials/content.ejs') %>
+
+	</body>
 </html>
