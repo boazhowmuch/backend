@@ -147,7 +147,7 @@ dist
 chatbot_env
 
 # confidential file(key, etc)
-server/conf/*
+conf/*
 
 # .DS_Store
 .DS_Store

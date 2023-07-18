@@ -8,6 +8,7 @@ let logger = require('morgan'); // 로그를 보기 쉽게 찍기 위한 모듈
 // 여기서 만든 app객체로 모든 요청·응답을 진행함
 const app = express();
 
+
 // 뷰 엔진으로 뭘 쓸지 정함. 우리는 ejs 사용.
 app.set('views', path.join(__dirname, 'views'));
 
@@ -57,11 +58,12 @@ const port = 3000;
 
 // app객체를 실행할 server객체를 만듦
 const server = http.createServer(app);
-app.use(cors({
-    origin: "*",                // 출처 허용 옵션
-    credentials: true,          // 응답 헤더에 Access-Control-Allow-Credentials 추가
-    optionsSuccessStatus: 200,  // 응답 상태 200으로 설정
-}))
+// app.use(cors({
+//     origin: "*",                // 출처 허용 옵션
+//     credentials: true,          // 응답 헤더에 Access-Control-Allow-Credentials 추가
+//     optionsSuccessStatus: 200,  // 응답 상태 200으로 설정
+// }))
+app.use(cors());
 // hostname, port에 대해 server객체가 listen하기 시작함.
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);

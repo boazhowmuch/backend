@@ -7,15 +7,20 @@ module.exports = {
     // login의 GET,POST 메소드 담고 있음
     login: {
       get: (req, res) => {
-        res.render('login', { msg: '' , title: 'Express'});
+        res.json({"msg" : "로그인 하세요"})
+        // res.render('login', { msg: '' , title: 'Express'});
       },
       post: (req, res) => {
           // POST 요청에 대한 처리
           const { username, password } = req.body;
+          console.log(req.body);
+          console.log(username, password);
+
           let msg = '';
+          console.log('로그인 시도 중');
 
           models.login.post(username, password, (error, result) =>{
-
+          
           if (error) {
               console.error(error);
               return res.status(500).send('Internal Server Error');
@@ -36,11 +41,16 @@ module.exports = {
               username: account_username,
               };
 
+              console.log(cookie_info);
               res.cookie('info', JSON.stringify(cookie_info));
+              msg = "hello";
+              // res.json({msg: msg});
               res.redirect('/');
           } else {
+              console.log(result);
               msg = 'Incorrect username/password!';
-              res.render('login', { msg: msg });
+              res.json({msg: msg});
+              // res.render('login', { msg: msg });
           }
         });
         

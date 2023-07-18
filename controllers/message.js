@@ -99,7 +99,8 @@ module.exports = {
 
         if (cookieData.loggedin) {
           // 사용자가 로그인 상태인 경우
-          return res.render('index', { username: cookieData.username });
+          return res.json(cookieData);
+          // return res.render('index', { username: cookieData.username });
         }
       }
     
