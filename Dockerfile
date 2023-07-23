@@ -14,8 +14,13 @@ RUN apk add --update npm
 
 COPY . .
 
+# package 설치
 RUN npm install
 
+# http
 EXPOSE 3000
+
+# https
+EXPOSE 3003
 
 CMD ["npm", "start"]
