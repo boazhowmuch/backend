@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(cors({
     credentials: true, // 쿠키를 허용하는데 필요
-    origin: 'http://localhost:3001', // React 서버 도메인 설정
+    origin: true, // React 서버 도메인 설정
     // origin: 'http://localhost:3001'
     }
 ));
