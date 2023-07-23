@@ -34,29 +34,29 @@ module.exports = {
               const account_id = account.accId;
               const account_username = account.username;
 
-              // 쿠키 정보를 일단 다음과 같이 담음 => 후에 jwt로그인 방식이 이용된다면, 변경
-              const cookie_info = {
-              loggedin: true,
-              account_id: account_id,
-              username: account_username,
-              };
-
               // console.log(cookie_info);
-              res.cookie('info', JSON.stringify(cookie_info), 
-              {
-                sameSite: 'none',
-                secure: true,
-              }
-              );
+              // res.cookie('info', JSON.stringify(cookie_info), 
+              // {
+              //   sameSite: 'none',
+              //   secure: true,
+              // }
+              // );
               // res.header('Access-Control-Allow-Origin', '172.30.1.9');
               // res.header('Access-Control-Allow-Credentials', 'true');
               msg = "로그인에 성공하였습니다.";
-              res.json({message: msg});
+              res.json({
+                loggedin: true,
+                account_id: account_id,
+                username: account_username,        
+                message: msg});
               // res.redirect('/');
           } else {
               console.log(result);
               msg = '아이디 또는 비밀번호를 잘못 입력하였습니다.';
-              res.json({message: msg});
+              res.json({
+                loggedin: false,
+                message: msg
+              });
               // res.render('login', { msg: msg });
           }
         });
