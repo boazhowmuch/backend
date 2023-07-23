@@ -46,7 +46,7 @@ module.exports = {
               {
                 sameSite: 'none',
                 secure: true,
-                // domain: "5c43-221-147-91-218.ngrok-free.app"
+                domain: "ngrok-free.app"
               }
               );
               // res.header('Access-Control-Allow-Origin', '172.30.1.9');
