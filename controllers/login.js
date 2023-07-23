@@ -48,6 +48,8 @@ module.exports = {
                 secure: true,
               }
               );
+              res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+              res.header('Access-Control-Allow-Credentials', 'true');
               msg = "로그인에 성공하였습니다.";
               res.json({message: msg});
               // res.redirect('/');
