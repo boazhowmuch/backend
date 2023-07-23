@@ -46,10 +46,11 @@ module.exports = {
               {
                 sameSite: 'none',
                 secure: true,
+                domain: "c43-221-147-91-218.ngrok-free.app"
               }
               );
-              res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
-              res.header('Access-Control-Allow-Credentials', 'true');
+              // res.header('Access-Control-Allow-Origin', '172.30.1.9');
+              // res.header('Access-Control-Allow-Credentials', 'true');
               msg = "로그인에 성공하였습니다.";
               res.json({message: msg});
               // res.redirect('/');
