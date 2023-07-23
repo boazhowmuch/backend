@@ -43,10 +43,10 @@ module.exports = {
 
               // console.log(cookie_info);
               res.cookie('info', JSON.stringify(cookie_info), 
-              // {
-              //   sameSite: 'none',
-              //   secure: true,
-              // }
+              {
+                sameSite: 'none',
+                secure: true,
+              }
               );
               msg = "로그인에 성공하였습니다.";
               res.json({message: msg});
