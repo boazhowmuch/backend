@@ -116,7 +116,7 @@ module.exports = {
       // 쿠키 정보를 가져온다(token id를 가져오기 위함)
       const cookieValue = req.cookies.info;
 
-      // 쿠키 정보가 있으면, dialogflow에 API에 전송
+      // 쿠키 정보가 있으면, dialogflow에 API에 전송 d
       if (cookieValue) {
         // 나중에 jwt token을 쓰게 되면 수정 필요
         const sessionId = JSON.parse(cookieValue).account_id;
