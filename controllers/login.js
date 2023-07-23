@@ -46,7 +46,6 @@ module.exports = {
               {
                 sameSite: 'none',
                 secure: true,
-                domain: 'localhost:3001'
               }
               );
               msg = "로그인에 성공하였습니다.";
