@@ -93,6 +93,8 @@ module.exports = {
   home: {
     get: (req, res) => {
       const cookieValue = req.cookies.info;
+      console.log(req);
+      console.log(req.cookies);
       if (cookieValue) {
         // 쿠키 값을 객체로 변환
         const cookieData = JSON.parse(cookieValue);
@@ -114,20 +116,21 @@ module.exports = {
     post: async(req, res) => {
 
       // 쿠키 정보를 가져온다(token id를 가져오기 위함)
-      const cookieValue = req.cookies.info;
+      // const cookieValue = req.cookies.info;
 
-      // 쿠키 정보가 있으면, dialogflow에 API에 전송 d
-      if (cookieValue) {
-        // 나중에 jwt token을 쓰게 되면 수정 필요
-        const sessionId = JSON.parse(cookieValue).account_id;
-        const userId = JSON.parse(cookieValue).account_id;
-        const userName = JSON.parse(cookieValue).username;
+
 
         // 유저가 입력한 질문(리스트형태로 입력)
         try {
+          const sessionId = req.body.account_id;
+          const userId = req.body.account_id;
+          const userName = req.body.username;
           const message = req.body.message;
         
-          if (!message) {
+          if (!sessionId) {
+            throw new Error('다시 로그인 해주세요');
+          }
+          else if(!message) {
             throw new Error('메시지 형식이 잘못되었거나, 메시지가 잘못되었습니다. 다시 입력해주세요.');
           }
         
@@ -140,9 +143,41 @@ module.exports = {
         }
 
       // 나중에 올바르지 않은 사용자 alert등 예외처리 해야 함(쿠키가 없는 경우 등)
-      } else {
-        res.status(400).json({ error: '다시 로그인 후 전송해주세요.' });
-      }
+
     }
+
+    // post: async(req, res) => {
+
+    //   // 쿠키 정보를 가져온다(token id를 가져오기 위함)
+    //   const cookieValue = req.cookies.info;
+
+    //   // 쿠키 정보가 있으면, dialogflow에 API에 전송 d
+    //   if (cookieValue) {
+    //     // 나중에 jwt token을 쓰게 되면 수정 필요
+    //     const sessionId = JSON.parse(cookieValue).account_id;
+    //     const userId = JSON.parse(cookieValue).account_id;
+    //     const userName = JSON.parse(cookieValue).username;
+
+    //     // 유저가 입력한 질문(리스트형태로 입력)
+    //     try {
+    //       const message = req.body.message;
+        
+    //       if (!message) {
+    //         throw new Error('메시지 형식이 잘못되었거나, 메시지가 잘못되었습니다. 다시 입력해주세요.');
+    //       }
+        
+    //       const queries = [message];
+    //       const response_msg = await responseMessage(projectId, sessionId, userId, userName, queries, languageCode);
+    //       return res.send({ message: response_msg });
+          
+    //     } catch (error) {
+    //       res.status(400).json({ error: error.message });
+    //     }
+
+    //   // 나중에 올바르지 않은 사용자 alert등 예외처리 해야 함(쿠키가 없는 경우 등)
+    //   } else {
+    //     res.status(400).json({ error: '다시 로그인 후 전송해주세요.' });
+    //   }
+    // }
   }
 }
